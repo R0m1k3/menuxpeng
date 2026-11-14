@@ -6,7 +6,8 @@ Menu de liens pour le navigateur de la XPeng G6 : grandes tuiles tactiles, caté
 
 ## Fonctions
 
-- Catégories dans une colonne à gauche (Cinéma / TV & streaming, Musique & radio, Route & recharge, Infos & météo au départ). On passe de l'une à l'autre en la touchant ou en balayant la grille.
+- Thème graphite façon Apple, surfaces en verre dépoli ; grands logos (184 px par défaut) pensés pour un écran de voiture.
+- Catégories en onglets dans la barre du haut avec l'heure (Cinéma / TV & streaming, Musique & radio, Route & recharge, Infos & météo au départ). On passe de l'une à l'autre en touchant l'onglet ou en balayant la grille.
 - Ajout d'un lien en tapant l'adresse : le nom et le logo sont trouvés seuls. Si le logo du site est trop petit, l'icône de l'application sur l'App Store (512 px) est utilisée. On peut aussi choisir parmi d'autres logos, en chercher un par nom ou coller l'adresse d'une image.
 - Mode Modifier : renommer, supprimer, déplacer un lien, le changer de catégorie ; créer, renommer, réordonner et supprimer les catégories (21 icônes).
 - Taille des logos réglable, ouverture dans le même onglet ou un nouvel onglet, export et import du menu en JSON.

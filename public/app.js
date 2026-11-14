@@ -186,6 +186,8 @@ function renderRail() {
     <button class="cat ${c.id === current ? "on" : ""}" data-id="${c.id}">
       ${svg(ICONS[c.icon] || ICONS.folder)}<span class="name">${esc(c.name)}</span><span class="count">${c.links.length}</span>
     </button>`).join("");
+  // garde l'onglet actif visible quand il y a beaucoup de catégories
+  $("#cats .cat.on")?.scrollIntoView({ block: "nearest", inline: "nearest" });
 }
 
 function renderGrid(animate, dir = "l") {
