@@ -105,6 +105,22 @@
   <div class="dlg-actions"><span class="grow"></span><button class="pill accent" data-close>Fermer</button></div>
 </dialog>
 
+<!-- Fenêtre de question (remplace confirm / prompt du navigateur) -->
+<dialog id="dlg-ask" class="sheet ask" tabindex="-1">
+  <form method="dialog" id="form-ask">
+    <div class="ask-icon" id="ask-icon"></div>
+    <h2 id="ask-title"></h2>
+    <p class="ask-msg" id="ask-msg"></p>
+    <div class="pin-dots" id="ask-dots"></div>
+    <div class="keypad" id="ask-keypad"></div>
+    <p class="ask-err" id="ask-err"></p>
+    <div class="ask-actions">
+      <button type="button" class="pill" id="ask-cancel">Annuler</button>
+      <button type="submit" class="pill accent" id="ask-ok">OK</button>
+    </div>
+  </form>
+</dialog>
+
 <div id="toast" class="toast"></div>
 <script src="app.js"></script>
 </body>

@@ -160,3 +160,29 @@ details label { margin-top: 10px; }
 .alts button img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .alts button.on { outline: 3px solid var(--accent); outline-offset: 2px; }
 .row input { flex: 1; min-width: 180px; }
+
+/* ---------- fenêtre de question / code ---------- */
+dialog.ask { width: min(460px, 92vw); text-align: center; padding: 34px 32px 28px; }
+.ask-icon { width: 72px; height: 72px; margin: 0 auto 18px; border-radius: 22px; display: grid; place-items: center; background: var(--surface-2); color: var(--accent); }
+.ask-icon svg { width: 34px; height: 34px; }
+dialog.ask.danger .ask-icon { background: rgba(255,107,94,.14); color: var(--danger); }
+dialog.ask h2 { margin: 0 0 10px; font-size: 25px; }
+.ask-msg { margin: 0 auto; max-width: 34ch; color: var(--muted); font-size: 18px; line-height: 1.45; }
+.ask-msg:empty { display: none; }
+.ask-err { margin: 12px 0 0; min-height: 1.3em; color: var(--danger); font-size: 16px; }
+.ask-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 22px; }
+.ask-actions .pill { min-height: 60px; font-size: 18px; }
+dialog.ask.danger .ask-actions .accent { background: var(--danger); color: #fff; }
+.pin-dots { display: none; justify-content: center; gap: 16px; margin: 24px 0 6px; }
+.pin-dots span { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 2px var(--line); transition: background .12s, box-shadow .12s; }
+.pin-dots span.on { background: var(--accent); box-shadow: none; }
+.keypad { display: none; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+dialog.ask.pin .pin-dots, dialog.ask.pin .keypad { display: grid; }
+dialog.ask.pin .pin-dots { display: flex; }
+.keypad button { min-height: 66px; border-radius: 18px; background: var(--bg); box-shadow: inset 0 0 0 1px var(--line); font-size: 26px; font-variant-numeric: tabular-nums; }
+.keypad button:active { background: var(--surface-2); }
+.keypad button svg { width: 26px; height: 26px; }
+.pin-dots.shake { animation: shake .35s; }
+@keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
+dialog.ask:focus { outline: none; }
+.keypad button:focus:not(:focus-visible), .ask-actions .pill:focus:not(:focus-visible) { outline: none; }
