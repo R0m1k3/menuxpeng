@@ -294,6 +294,30 @@ function setEditing(on) { editing = on; render(); }
 $("#btn-edit").onclick = () => setEditing(!editing);
 $("#btn-done").onclick = () => setEditing(false);
 
+/* ---------- plein écran (cache la barre du navigateur) ---------- */
+const root = document.documentElement;
+const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+const fsEnter = root.requestFullscreen || root.webkitRequestFullscreen;
+const fsExit = document.exitFullscreen || document.webkitExitFullscreen;
+const standalone = matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches || navigator.standalone;
+if (fsEnter && !standalone) {
+  const btn = $("#btn-full");
+  btn.hidden = false;
+  const sync = () => {
+    const on = !!fsElement();
+    document.body.classList.toggle("full", on);
+    btn.title = on ? "Quitter le plein écran" : "Plein écran";
+  };
+  btn.onclick = async () => {
+    try {
+      if (fsElement()) await fsExit.call(document);
+      else await fsEnter.call(root, { navigationUI: "hide" });
+    } catch { toast("Plein écran refusé par le navigateur"); }
+  };
+  document.addEventListener("fullscreenchange", sync);
+  document.addEventListener("webkitfullscreenchange", sync);
+}
+
 $("#grid").addEventListener("click", async (e) => {
   if (e.target.closest("#tile-add")) { e.preventDefault(); return openLink(null); }
   const tile = e.target.closest(".tile");

@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#2a2c30">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
 <title>Menu G6</title>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -13,6 +17,10 @@
     <div class="clock"><span id="time">--:--</span><small id="date"></small></div>
     <nav id="cats" class="cats"></nav>
     <div class="rail-actions">
+      <button id="btn-full" class="rail-btn" title="Plein écran" hidden>
+        <svg class="ic-enter" viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+        <svg class="ic-exit" viewBox="0 0 24 24"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+      </button>
       <button id="btn-edit" class="rail-btn" title="Modifier">
         <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>
         <span>Modifier</span>
