@@ -32,6 +32,9 @@ const UI = {
   up: '<path d="M5 15l7-7 7 7"/>',
   down: '<path d="M5 9l7 7 7-7"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  back: '<path d="M21 6H9l-6 6 6 6h12zM17 10l-4 4M13 10l4 4"/>',
+  info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
   trash: '<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/>',
 };
 const svg = (paths) => `<svg viewBox="0 0 24 24">${paths}</svg>`;
@@ -44,6 +47,61 @@ let current = localStorage.getItem("menu.cat") || null;
 let editing = false;
 let pin = localStorage.getItem("menu.pin") || "";
 let editLink = null; // {catId, linkId} en cours d'édition
+
+/* ---------- fenêtres de question (à la place de confirm / prompt) ---------- */
+const dlgAsk = $("#dlg-ask");
+let askDone = null;
+
+/* ask({title, message, ok, danger, icon}) -> Promise<boolean> */
+function ask({ title, message = "", ok = "OK", cancel = "Annuler", danger = false, icon }) {
+  return openAsk({ title, message, ok, cancel, danger, icon: icon || (danger ? UI.trash : UI.info) });
+}
+/* askPin({title, message, error}) -> Promise<string|null> : clavier à chiffres tactile */
+function askPin({ title = "Code de modification", message = "", error = "" } = {}) {
+  return openAsk({ title, message, ok: "Valider", cancel: "Annuler", icon: UI.lock, pin: true, error });
+}
+function openAsk(o) {
+  if (askDone) askDone(o.pin ? null : false);
+  let code = "";
+  dlgAsk.className = "sheet ask" + (o.danger ? " danger" : "") + (o.pin ? " pin" : "");
+  $("#ask-icon").innerHTML = svg(o.icon);
+  $("#ask-title").textContent = o.title;
+  $("#ask-msg").textContent = o.message;
+  $("#ask-err").textContent = o.error || "";
+  $("#ask-ok").textContent = o.ok;
+  $("#ask-cancel").textContent = o.cancel;
+  const dots = () => {
+    const n = Math.max(4, code.length);
+    $("#ask-dots").innerHTML = Array.from({ length: n }, (_, i) => `<span class="${i < code.length ? "on" : ""}"></span>`).join("");
+    $("#ask-ok").disabled = o.pin && !code.length;
+  };
+  if (o.pin) {
+    $("#ask-keypad").innerHTML = ["1","2","3","4","5","6","7","8","9","","0","del"].map((k) =>
+      k === "" ? "<span></span>" : `<button type="button" data-k="${k}">${k === "del" ? svg(UI.back) : k}</button>`).join("");
+    $("#ask-keypad").onclick = (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.k === "del") code = code.slice(0, -1); else if (code.length < 12) code += b.dataset.k;
+      $("#ask-err").textContent = ""; dots();
+    };
+    if (o.error) requestAnimationFrame(() => { const d = $("#ask-dots"); d.classList.remove("shake"); void d.offsetWidth; d.classList.add("shake"); });
+  }
+  dots();
+  // clavier physique : chiffres, effacement, Entrée
+  dlgAsk.onkeydown = (e) => {
+    if (!o.pin) return;
+    if (/^[0-9]$/.test(e.key) && code.length < 12) { code += e.key; dots(); }
+    else if (e.key === "Backspace") { code = code.slice(0, -1); dots(); }
+  };
+  return new Promise((resolve) => {
+    askDone = (v) => { askDone = null; if (dlgAsk.open) dlgAsk.close(); resolve(v); };
+    $("#form-ask").onsubmit = (e) => { e.preventDefault(); if (o.pin && !code) return; askDone(o.pin ? code : true); };
+    $("#ask-cancel").onclick = () => askDone(o.pin ? null : false);
+    dlgAsk.oncancel = (e) => { e.preventDefault(); askDone(o.pin ? null : false); };
+    dlgAsk.onclose = () => { if (askDone) askDone(o.pin ? null : false); };
+    dlgAsk.showModal();
+    dlgAsk.focus(); // pas de focus visible sur une touche à l'ouverture
+  });
+}
 
 /* ---------- données ---------- */
 async function load() {
@@ -75,10 +133,15 @@ async function push() {
   }).catch(() => null);
   if (!r) return toast("Hors ligne : enregistré sur cet appareil seulement");
   if (r.status === 403) {
-    const p = prompt("Code pour modifier le menu");
-    if (p !== null) { pin = p; localStorage.setItem("menu.pin", p); push(); }
-  }
+    const p = await askPin({
+      message: "Entrez le code pour enregistrer vos changements. Il sera retenu sur cet appareil.",
+      error: pin ? "Code incorrect" : "",
+    });
+    if (p === null) return toast("Changements non enregistrés sur le serveur");
+    pin = p; pinAsked = true; localStorage.setItem("menu.pin", p); push();
+  } else if (r.ok && pinAsked) { pinAsked = false; toast("Code accepté"); }
 }
+let pinAsked = false;
 
 async function fetchMeta(url) {
   const r = await fetch("/api/meta?url=" + encodeURIComponent(url));
@@ -123,6 +186,8 @@ function renderRail() {
     <button class="cat ${c.id === current ? "on" : ""}" data-id="${c.id}">
       ${svg(ICONS[c.icon] || ICONS.folder)}<span class="name">${esc(c.name)}</span><span class="count">${c.links.length}</span>
     </button>`).join("");
+  // garde l'onglet actif visible quand il y a beaucoup de catégories
+  $("#cats .cat.on")?.scrollIntoView({ block: "nearest", inline: "nearest" });
 }
 
 function renderGrid(animate, dir = "l") {
@@ -229,7 +294,7 @@ function setEditing(on) { editing = on; render(); }
 $("#btn-edit").onclick = () => setEditing(!editing);
 $("#btn-done").onclick = () => setEditing(false);
 
-$("#grid").addEventListener("click", (e) => {
+$("#grid").addEventListener("click", async (e) => {
   if (e.target.closest("#tile-add")) { e.preventDefault(); return openLink(null); }
   const tile = e.target.closest(".tile");
   if (!tile) return;
@@ -239,8 +304,9 @@ $("#grid").addEventListener("click", (e) => {
   const c = cat();
   const i = c.links.findIndex((l) => l.id === tile.dataset.id);
   if (act === "del") {
-    if (!confirm(`Supprimer « ${c.links[i].title} » ?`)) return;
-    c.links.splice(i, 1);
+    const l = c.links[i];
+    if (!await ask({ title: `Supprimer « ${l.title} » ?`, message: "Le lien sera retiré de la catégorie.", ok: "Supprimer", danger: true })) return;
+    c.links.splice(c.links.indexOf(l), 1);
   } else if (act === "left" || act === "right") {
     const j = act === "left" ? i - 1 : i + 1;
     [c.links[i], c.links[j]] = [c.links[j], c.links[i]];
@@ -365,7 +431,8 @@ $("#form-link").addEventListener("submit", (e) => {
   }
   save(); renderRail(); renderGrid(false);
 });
-$("#btn-del-link").onclick = () => {
+$("#btn-del-link").onclick = async () => {
+  if (!await ask({ title: `Supprimer « ${$("#f-title").value} » ?`, message: "Le lien sera retiré de la catégorie.", ok: "Supprimer", danger: true })) return;
   const from = state.categories.find((c) => c.id === editLink.fromCat);
   from.links = from.links.filter((l) => l.id !== editLink.linkId);
   dlgLink.close(); save(); renderRail(); renderGrid(false);
@@ -391,7 +458,7 @@ $("#cat-list").addEventListener("input", (e) => {
   const c = state.categories.find((c) => c.id === e.target.closest("li").dataset.id);
   c.name = e.target.value; save(); renderRail(); renderGrid(false);
 });
-$("#cat-list").addEventListener("click", (e) => {
+$("#cat-list").addEventListener("click", async (e) => {
   const act = e.target.closest("button")?.dataset.act;
   if (!act) return;
   const id = e.target.closest("li").dataset.id;
@@ -403,9 +470,13 @@ $("#cat-list").addEventListener("click", (e) => {
     [state.categories[i], state.categories[j]] = [state.categories[j], state.categories[i]];
   }
   if (act === "del") {
-    const msg = c.links.length ? `Supprimer « ${c.name} » et ses ${c.links.length} liens ?` : `Supprimer « ${c.name} » ?`;
-    if (!confirm(msg)) return;
-    state.categories.splice(i, 1);
+    const n = c.links.length;
+    if (!await ask({
+      title: `Supprimer « ${c.name} » ?`,
+      message: n ? `La catégorie et ${n === 1 ? "son lien seront supprimés" : `ses ${n} liens seront supprimés`}.` : "La catégorie est vide.",
+      ok: "Supprimer", danger: true,
+    })) return;
+    state.categories.splice(state.categories.indexOf(c), 1);
     if (current === id) current = state.categories[0]?.id;
   }
   save(); renderCatList(); render();
