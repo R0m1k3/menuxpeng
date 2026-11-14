@@ -9,12 +9,12 @@ ENV PYTHONUNBUFFERED=1 \
     MENU_PORT=8420 \
     MENU_DATA=/data
 
-WORKDIR /app
-COPY server.py seed.json ./
-COPY public ./public
+RUN apk add --no-cache su-exec
 
-RUN adduser -D -u 1000 menu && mkdir -p /data/icons && chown -R menu:menu /data
-USER menu
+WORKDIR /app
+COPY server.py seed.json entrypoint.sh ./
+COPY public ./public
+RUN chmod +x entrypoint.sh && mkdir -p /data/icons
 
 VOLUME ["/data"]
 EXPOSE 8420
@@ -22,4 +22,5 @@ EXPOSE 8420
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
   CMD wget -q -O /dev/null http://127.0.0.1:8420/healthz || exit 1
 
+ENTRYPOINT ["/app/entrypoint.sh"]
 CMD ["python3", "server.py"]

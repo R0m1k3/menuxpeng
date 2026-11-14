@@ -41,6 +41,7 @@ Données : le dossier `./data` (monté sur `/data`) contient `menu.json` et les 
 | `MENU_PIN` | vide | code demandé pour modifier le menu (vide = pas de code) |
 | `MENU_PORT` | `8420` | port d'écoute |
 | `MENU_DATA` | `/data` | dossier des données |
+| `PUID` / `PGID` | `1000` | utilisateur qui fait tourner le serveur et possède `./data` (le conteneur règle les droits au démarrage) |
 
 ## Sans Docker
 
