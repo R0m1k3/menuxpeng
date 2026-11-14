@@ -1,0 +1,14 @@
+services:
+  menuxpeng:
+    image: ghcr.io/r0m1k3/menuxpeng:latest
+    # ou, pour construire depuis les sources : build: .
+    container_name: menuxpeng
+    restart: unless-stopped
+    ports:
+      - "8420:8420"
+    environment:
+      # Code demandé pour modifier le menu (vide = pas de protection). À mettre dans un fichier .env.
+      MENU_PIN: ${MENU_PIN:-}
+      TZ: Europe/Paris
+    volumes:
+      - ./data:/data

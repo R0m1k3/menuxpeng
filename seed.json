@@ -1,0 +1,34 @@
+{
+ "version": 1,
+ "settings": {"tileSize": "l", "newTab": false},
+ "categories": [
+  {"id": "streaming", "name": "Cinéma / TV & streaming", "icon": "film", "links": [
+   {"id": "l1", "title": "Netflix", "url": "https://www.netflix.com"},
+   {"id": "l2", "title": "Prime Video", "url": "https://www.primevideo.com"},
+   {"id": "l3", "title": "Disney+", "url": "https://www.disneyplus.com"},
+   {"id": "l4", "title": "Canal+", "url": "https://www.canalplus.com"},
+   {"id": "l5", "title": "YouTube", "url": "https://www.youtube.com"},
+   {"id": "l6", "title": "france.tv", "url": "https://www.france.tv"},
+   {"id": "l7", "title": "Arte", "url": "https://www.arte.tv"},
+   {"id": "l8", "title": "Apple TV+", "url": "https://tv.apple.com"},
+   {"id": "l9", "title": "Twitch", "url": "https://www.twitch.tv"},
+   {"id": "l10", "title": "Molotov", "url": "https://www.molotov.tv"}
+  ]},
+  {"id": "musique", "name": "Musique & radio", "icon": "music", "links": [
+   {"id": "l11", "title": "Spotify", "url": "https://open.spotify.com"},
+   {"id": "l12", "title": "Deezer", "url": "https://www.deezer.com"},
+   {"id": "l13", "title": "YouTube Music", "url": "https://music.youtube.com"},
+   {"id": "l14", "title": "Radio France", "url": "https://www.radiofrance.fr"}
+  ]},
+  {"id": "route", "name": "Route & recharge", "icon": "bolt", "links": [
+   {"id": "l15", "title": "Chargemap", "url": "https://chargemap.com/map"},
+   {"id": "l16", "title": "Electra", "url": "https://www.go-electra.com"},
+   {"id": "l17", "title": "Ionity", "url": "https://ionity.eu"},
+   {"id": "l18", "title": "Google Maps", "url": "https://www.google.com/maps"}
+  ]},
+  {"id": "infos", "name": "Infos & météo", "icon": "news", "links": [
+   {"id": "l19", "title": "franceinfo", "url": "https://www.francetvinfo.fr"},
+   {"id": "l20", "title": "Météo-France", "url": "https://meteofrance.com"}
+  ]}
+ ]
+}

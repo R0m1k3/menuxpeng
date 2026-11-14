@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0e11">
+<title>Menu G6</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="rail">
+    <div class="clock"><span id="time">--:--</span><small id="date"></small></div>
+    <nav id="cats" class="cats"></nav>
+    <div class="rail-actions">
+      <button id="btn-edit" class="rail-btn" title="Modifier">
+        <svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16v4z"/><path d="M14 6l4 4"/></svg>
+        <span>Modifier</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <h1 id="cat-title"></h1>
+      <div class="top-tools edit-only">
+        <button class="pill" id="btn-cats">Catégories</button>
+        <button class="pill" id="btn-settings">Réglages</button>
+        <button class="pill accent" id="btn-done">Terminé</button>
+      </div>
+    </header>
+    <section id="grid" class="grid"></section>
+  </main>
+</div>
+
+<!-- Ajout / édition d'un lien -->
+<dialog id="dlg-link" class="sheet">
+  <form method="dialog" id="form-link">
+    <h2 id="link-dlg-title">Ajouter un lien</h2>
+    <div class="link-preview">
+      <div class="plate big" id="lp-plate"><img id="lp-img" alt=""></div>
+      <div class="lp-side">
+        <label>Adresse du site
+          <input id="f-url" type="url" inputmode="url" placeholder="netflix.com" autocomplete="off" required>
+        </label>
+        <button type="button" class="pill" id="btn-fetch">Récupérer nom et logo</button>
+        <p class="hint" id="fetch-state"></p>
+      </div>
+    </div>
+    <label>Nom affiché <input id="f-title" maxlength="40" required></label>
+    <label>Catégorie <select id="f-cat"></select></label>
+    <div class="field" id="alts-field">Autres logos proposés
+      <div class="alts" id="alts"></div>
+      <div class="row"><input id="f-alt-q" placeholder="Chercher un logo d'appli (ex : Molotov)"><button type="button" class="pill" id="btn-alt-q">Chercher</button></div>
+    </div>
+    <details>
+      <summary>Logo personnalisé</summary>
+      <label>Adresse d'une image (laisser vide = logo du site)
+        <input id="f-icon" type="url" placeholder="https://…/logo.png">
+      </label>
+    </details>
+    <div class="dlg-actions">
+      <button type="button" class="pill danger" id="btn-del-link">Supprimer</button>
+      <span class="grow"></span>
+      <button type="button" class="pill" data-close>Annuler</button>
+      <button type="submit" class="pill accent">Enregistrer</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- Catégories -->
+<dialog id="dlg-cats" class="sheet">
+  <h2>Catégories</h2>
+  <ul id="cat-list" class="cat-list"></ul>
+  <div class="dlg-actions">
+    <button class="pill" id="btn-add-cat">Nouvelle catégorie</button>
+    <span class="grow"></span>
+    <button class="pill accent" data-close>Fermer</button>
+  </div>
+</dialog>
+
+<!-- Choix d'icône de catégorie -->
+<dialog id="dlg-icon" class="sheet small">
+  <h2>Icône de la catégorie</h2>
+  <div id="icon-pick" class="icon-pick"></div>
+  <div class="dlg-actions"><span class="grow"></span><button class="pill" data-close>Annuler</button></div>
+</dialog>
+
+<!-- Réglages -->
+<dialog id="dlg-settings" class="sheet small">
+  <h2>Réglages</h2>
+  <div class="field">Taille des logos
+    <div class="seg" id="seg-size">
+      <button data-v="m">Moyen</button><button data-v="l">Grand</button><button data-v="xl">Très grand</button>
+    </div>
+  </div>
+  <label class="check"><input type="checkbox" id="f-newtab"> Ouvrir les sites dans un nouvel onglet</label>
+  <div class="field">Sauvegarde
+    <div class="row">
+      <button class="pill" id="btn-export">Exporter</button>
+      <label class="pill file">Importer<input type="file" id="f-import" accept="application/json" hidden></label>
+      <button class="pill" id="btn-refresh-icons">Rafraîchir tous les logos</button>
+    </div>
+  </div>
+  <div class="dlg-actions"><span class="grow"></span><button class="pill accent" data-close>Fermer</button></div>
+</dialog>
+
+<div id="toast" class="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
