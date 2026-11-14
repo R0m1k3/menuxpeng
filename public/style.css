@@ -71,13 +71,14 @@ body.editing .edit-only.tile { display: flex !important; }
 .tile.add svg { width: 44px; height: 44px; }
 
 /* actions en mode édition */
-.tile .tools { display: none; position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: calc(var(--tile) + 20px); justify-content: space-between; }
+.tile .tools { display: none; position: absolute; z-index: 3; top: -8px; left: 50%; transform: translateX(-50%); width: calc(var(--tile) + 20px); justify-content: space-between; }
 body.editing .tile .tools { display: flex; }
 body.editing .tile:not(.add) .plate { animation: wobble .5s ease-in-out infinite alternate; }
 @keyframes wobble { from { transform: rotate(-1.2deg); } to { transform: rotate(1.2deg); } }
-.tools button { width: 44px; height: 44px; border-radius: 50%; background: #2c333c; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
+.tools button { width: 44px; height: 44px; border-radius: 50%; background: #39414b; color: var(--text); border: 2px solid var(--bg); display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,.5); }
 .tools button svg { width: 20px; height: 20px; }
 .tools .t-del { background: var(--danger); color: #fff; }
+.tools button svg { stroke-width: 2.4; }
 .tile .move { display: none; gap: 8px; }
 body.editing .tile .move { display: flex; }
 .move button { width: 52px; height: 40px; border-radius: 12px; background: var(--surface-2); display: grid; place-items: center; }
