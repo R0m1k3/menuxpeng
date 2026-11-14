@@ -33,7 +33,11 @@ PIN = os.environ.get("MENU_PIN", "")
 UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/130.0 Safari/537.36")
 LOCK = threading.Lock()
-os.makedirs(ICONS, exist_ok=True)
+try:
+    os.makedirs(ICONS, exist_ok=True)
+except PermissionError:
+    raise SystemExit(f"Impossible d'écrire dans {DATA} : donnez ce dossier à l'utilisateur {os.getuid()} "
+                     f"(chown -R {os.getuid()}:{os.getgid()} <dossier monté>)")
 
 
 def fetch(url, limit=2_000_000, timeout=8):
